@@ -4,7 +4,7 @@ import config 1.0 as Config
 
 FocusScope {
     id: root
-    property var wallpaper: "file:///usr/local/QLauncher/background.jpg"
+    property var wallpaper: "file:///usr/share/backgrounds/background.jpg"
     Image {
             id: background
             fillMode: Image.PreserveAspectCrop

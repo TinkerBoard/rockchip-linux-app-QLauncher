@@ -20,12 +20,12 @@ void Launcher::pickWallpaper(QString path)
         qDebug()<<"pickWallpaper path is null!"<<endl;
         return;
     }
-    if (QFile::exists("/usr/local/QLauncher/background.jpg"))
+    if (QFile::exists("/usr/share/backgrounds/background.jpg"))
     {
-        QFile::remove("/usr/local/QLauncher/background.jpg");
+        QFile::remove("/usr/share/backgrounds/background.jpg");
     }
 
-    bool result=QFile::copy(QUrl(path).toLocalFile(), "/usr/local/QLauncher/background.jpg");
+    bool result=QFile::copy(QUrl(path).toLocalFile(), "/usr/share/backgrounds/background.jpg");
         qDebug()<<"pickWallpaper path="<<QUrl(path).toLocalFile()<<",result="<<result;
 }
 
