@@ -50,8 +50,10 @@ else
 fi
 
 DOCKER_IMAGE="asus/builder-tinker_edge_r-debian:latest"
+cp -r $DIRECTORY_PATH_TO_SOURCE/debian/ubuntu-build-service/packages $DIRECTORY_PATH_TO_SOURCE/docker_builder/.
 docker build --build-arg userid=$(id -u) --build-arg groupid=$(id -g) --build-arg username=$(id -un) -t $DOCKER_IMAGE \
     --file $DIRECTORY_PATH_TO_DOCKER_BUILDER/Dockerfile $DIRECTORY_PATH_TO_DOCKER_BUILDER
+rm -rf $DIRECTORY_PATH_TO_SOURCE/docker_builder/packages
 
 OPTIONS="--interactive --privileged --rm --tty"
 OPTIONS+=" --volume $DIRECTORY_PATH_TO_SOURCE:/source"
