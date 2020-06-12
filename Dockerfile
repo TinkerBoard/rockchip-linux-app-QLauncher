@@ -12,7 +12,7 @@ COPY packages /packages
 RUN apt-get update && \
     apt-get install -y make gcc bc python libssl-dev liblz4-tool sudo time \
     g++ patch wget cpio unzip rsync bzip2 perl gcc-multilib git kmod parted \
-    gdisk udev expect gawk
+    gdisk udev expect gawk zip
 
 # Install required package for building Tinker Edge R base Debian system
 RUN  apt-get install -y binfmt-support qemu-user-static live-build
