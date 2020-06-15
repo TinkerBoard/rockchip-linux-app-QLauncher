@@ -2,6 +2,8 @@
 
 set -xe
 
+start_time=$(date +"%s")
+
 if [ -x "$(command -v docker)" ]; then
     echo "Docker is installed and the execute permission is granted."
     if getent group docker | grep &>/dev/null "\b$(id -un)\b"; then
@@ -64,3 +66,21 @@ if [ $VERSION ] || [ $VERSION_NUMBER ]; then
 else
 	docker run $OPTIONS $DOCKER_IMAGE chroot --skip-chdir --userspec=$USER:$USER / /bin/bash -i
 fi
+
+end_time=$(date +"%s")
+tdiff=$(($end_time-$start_time))
+hours=$(($tdiff / 3600 ))
+mins=$((($tdiff % 3600) / 60))
+secs=$(($tdiff % 60))
+
+set +x
+
+echo -n "#### build completed "
+if [ $hours -gt 0 ] ; then
+	printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
+elif [ $mins -gt 0 ] ; then
+	printf "(%02g:%02g (mm:ss))" $mins $secs
+elif [ $secs -gt 0 ] ; then
+	printf "(%s seconds)" $secs
+fi
+echo " ####"
