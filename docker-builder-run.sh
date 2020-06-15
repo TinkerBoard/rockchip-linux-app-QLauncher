@@ -59,4 +59,8 @@ OPTIONS="--interactive --privileged --rm --tty"
 OPTIONS+=" --volume $DIRECTORY_PATH_TO_SOURCE:/source"
 echo "Options to run docker: $OPTIONS"
 
-docker run $OPTIONS $DOCKER_IMAGE
+if [ $VERSION ] || [ $VERSION_NUMBER ]; then
+	docker run $OPTIONS $DOCKER_IMAGE chroot --skip-chdir --userspec=$USER:$USER / /bin/bash -c "VERSION=$VERSION VERSION_NUMBER=$VERSION_NUMBER ./build.sh"
+else
+	docker run $OPTIONS $DOCKER_IMAGE chroot --skip-chdir --userspec=$USER:$USER / /bin/bash -i
+fi
