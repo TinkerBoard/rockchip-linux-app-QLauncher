@@ -5,19 +5,22 @@ ARG userid
 ARG groupid
 ARG username
 
-COPY packages /packages
-
-# Install required packages for building Tinker Edge R Debian
-# kmod: depmod is required by "make modules_install"
+# Install required packages for building Tinker Board (S) Debian
 RUN apt-get update && \
-    apt-get install -y make gcc bc python libssl-dev liblz4-tool sudo time \
-    g++ patch wget cpio unzip rsync bzip2 perl gcc-multilib git kmod parted \
-    gdisk udev expect gawk zip
+    apt-get install -y git gcc-arm-linux-gnueabihf u-boot-tools \
+    device-tree-compiler mtools parted libudev-dev libusb-1.0-0-dev \
+    python-linaro-image-tools linaro-image-tools libssl-dev autotools-dev \
+    libsigsegv2 m4 libdrm-dev curl sed make binutils build-essential gcc g++ \
+    bash patch gzip bzip2 perl tar cpio python unzip rsync file bc wget \
+    libncurses5 libglib2.0-dev openssh-client time
 
-# Install required package for building Tinker Edge R base Debian system
-RUN  apt-get update && \
-     apt-get install -y binfmt-support qemu-user-static live-build
-RUN dpkg -i /packages/* || apt-get install -f -y
+# Install required packages for building Tinker Board (S) base Debian system
+RUN apt-get install -y binfmt-support qemu-user-static live-build debootstrap
+#RUN dpkg -i /packages/* || apt-get install -f -y
+
+# Install additional packages
+# kmod: depmod is required by "make modules_install"
+RUN apt-get install -y kmod expect
 
 RUN groupadd -g $groupid $username && \
     useradd -m -u $userid -g $groupid $username && \
