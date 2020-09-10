@@ -25,9 +25,10 @@ RUN wget https://github.com/rockchip-linux/rk-rootfs-build/raw/master/ubuntu-bui
 RUN wget https://github.com/rockchip-linux/rk-rootfs-build/raw/master/ubuntu-build-service/packages/live-build_3.0.5-1linaro1_all.deb
 RUN wget https://github.com/rockchip-linux/rk-rootfs-build/raw/master/ubuntu-build-service/packages/python-linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb
 RUN wget http://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb
-RUN dpkg -i python-support_1.0.15_all.deb debootstrap_1.0.87_all.deb linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb live-build_3.0.5-1linaro1_all.deb python-linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb
+RUN wget http://launchpadlibrarian.net/343927385/device-tree-compiler_1.4.5-3_amd64.deb
+RUN dpkg -i python-support_1.0.15_all.deb debootstrap_1.0.87_all.deb linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb live-build_3.0.5-1linaro1_all.deb python-linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb device-tree-compiler_1.4.5-3_amd64.deb
 RUN apt-get install -f -y
-RUN rm python-support_1.0.15_all.deb debootstrap_1.0.87_all.deb linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb live-build_3.0.5-1linaro1_all.deb python-linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb
+RUN rm python-support_1.0.15_all.deb debootstrap_1.0.87_all.deb linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb live-build_3.0.5-1linaro1_all.deb python-linaro-image-tools_2012.12-0ubuntu1~linaro1_all.deb device-tree-compiler_1.4.5-3_amd64.deb
 
 RUN groupadd -g $groupid $username && \
     useradd -m -u $userid -g $groupid $username && \
