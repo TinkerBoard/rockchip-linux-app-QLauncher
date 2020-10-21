@@ -11,7 +11,7 @@ RUN apt-get update && \
     device-tree-compiler mtools parted libudev-dev libusb-1.0-0-dev libssl-dev \
     autotools-dev libsigsegv2 m4 libdrm-dev curl sed make binutils \
     build-essential gcc g++ bash patch gzip bzip2 perl tar cpio python unzip \
-    rsync file bc wget libncurses5 libglib2.0-dev openssh-client time
+    rsync file bc wget libncurses5 libglib2.0-dev openssh-client time zip
 
 # Install additional packages
 # kmod: depmod is required by "make modules_install"
