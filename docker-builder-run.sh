@@ -2,8 +2,6 @@
 
 set -xe
 
-start_time=$(date +"%s")
-
 if [ -x "$(command -v docker)" ]; then
     echo "Docker is installed and the execute permission is granted."
     if getent group docker | grep &>/dev/null "\b$(id -un)\b"; then
@@ -36,49 +34,55 @@ else
 fi
 
 DIRECTORY_PATH_TO_DOCKER_BUILDER="$(dirname $(readlink -f $0))"
-echo "DIRECTORY_PATH_TO_DOCKER_BUILDER: $DIRECTORY_PATH_TO_DOCKER_BUILDER"
-
 DIRECTORY_PATH_TO_SOURCE="$(dirname $DIRECTORY_PATH_TO_DOCKER_BUILDER)"
 
-if [ $# -eq 0 ]; then
-    echo "There is no directory path to the source provided."
-    echo "Use the default directory path to the source [$DIRECTORY_PATH_TO_SOURCE]."
-else
-    DIRECTORY_PATH_TO_SOURCE=$1
-    if [ ! -d $DIRECTORY_PATH_TO_SOURCE ]; then
-        echo "The source directory [$DIRECTORY_PATH_TO_SOURCE] is not found."
-        exit
-    fi
+function usage
+{
+    echo -e "usage: $0 [[[-c command to execute] [-d directory path to the source]] | [-h]]\n"
+}
+
+while getopts 'c:d:h' opt;
+do
+    case $opt in
+	c)
+            CMD="$OPTARG"
+            ;;
+	d)
+            DIRECTORY_PATH_TO_SOURCE="$OPTARG"
+            ;;
+	h|?)
+            usage
+            exit 1
+	    ;;
+    esac
+done
+
+echo "DIRECTORY_PATH_TO_DOCKER_BUILDER: $DIRECTORY_PATH_TO_DOCKER_BUILDER"
+echo "The directory path to the source is set to [$DIRECTORY_PATH_TO_SOURCE]."
+if [ ! -d $DIRECTORY_PATH_TO_SOURCE ]; then
+    echo "The source directory [$DIRECTORY_PATH_TO_SOURCE] is not found."
+    exit
 fi
 
-DOCKER_IMAGE="asus/builder-tinker_board-debian-linux4.4-rk3288-tinker_board:latest"
-docker build --build-arg userid=$(id -u) --build-arg groupid=$(id -g) --build-arg username=$(id -un) -t $DOCKER_IMAGE \
+DOCKER_IMAGE="asus/builder:latest"
+docker build --tag $DOCKER_IMAGE \
     --file $DIRECTORY_PATH_TO_DOCKER_BUILDER/Dockerfile $DIRECTORY_PATH_TO_DOCKER_BUILDER
 
-OPTIONS="--interactive --privileged --rm --tty"
-OPTIONS+=" --volume $DIRECTORY_PATH_TO_SOURCE:/source"
-echo "Options to run docker: $OPTIONS"
+DOCKER_OPTIONS="--interactive --privileged --rm --tty"
+DOCKER_OPTIONS+=" --volume $DIRECTORY_PATH_TO_SOURCE:/source"
+DOCKER_OPTIONS+=" --workdir /source"
+echo "Options to run docker: $DOCKER_OPTIONS"
 
-if [ $VERSION ] || [ $VERSION_NUMBER ]; then
-	docker run $OPTIONS $DOCKER_IMAGE chroot --skip-chdir --userspec=$USER:$USER / /bin/bash -c "VERSION=$VERSION VERSION_NUMBER=$VERSION_NUMBER ./build.sh"
+if [ -z ${CMD+x} ]; then
+    docker run $DOCKER_OPTIONS $DOCKER_IMAGE /bin/bash -c "groupadd --gid $(id -g) $(id -g -n); \
+        useradd -m -e \"\" -s /bin/bash --gid $(id -g) --uid $(id -u) $(id -u -n); \
+        passwd -d $(id -u -n); \
+        echo \"$(id -u -n) ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers; \
+	sudo -E -u $(id -u -n) --set-home /bin/bash -i"
 else
-	docker run $OPTIONS $DOCKER_IMAGE chroot --skip-chdir --userspec=$USER:$USER / /bin/bash -i
+    docker run $DOCKER_OPTIONS $DOCKER_IMAGE /bin/bash -c "groupadd --gid $(id -g) $(id -g -n); \
+        useradd -m -e \"\" -s /bin/bash --gid $(id -g) --uid $(id -u) $(id -u -n); \
+        passwd -d $(id -u -n); \
+        echo \"$(id -u -n) ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers; \
+        sudo -E -u $(id -u -n) --set-home $CMD"
 fi
-
-end_time=$(date +"%s")
-tdiff=$(($end_time-$start_time))
-hours=$(($tdiff / 3600 ))
-mins=$((($tdiff % 3600) / 60))
-secs=$(($tdiff % 60))
-
-set +x
-
-echo -n "#### build completed "
-if [ $hours -gt 0 ] ; then
-	printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
-elif [ $mins -gt 0 ] ; then
-	printf "(%02g:%02g (mm:ss))" $mins $secs
-elif [ $secs -gt 0 ] ; then
-	printf "(%s seconds)" $secs
-fi
-echo " ####"
