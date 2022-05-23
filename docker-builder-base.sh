@@ -103,6 +103,15 @@ function asus_docker_env_check_prerequisites() {
     return 1
   fi
 
+  # The module loop is not loaded by default for some Linux distributions sucn as Debain.
+  # We need this for command mount inside the container"
+  if [[ ! -d /sys/module/loop ]]; then
+    echo "The module loop is not loaded yet."
+    echo "Please load the module loop using the following command first."
+    echo "sudo modprobe loop"
+    return 1
+  fi
+
   return 0
 }
 
