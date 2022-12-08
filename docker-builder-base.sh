@@ -9,7 +9,7 @@ export ASUS_DOCKER_ENV_SOURCE="$(dirname ${ASUS_DOCKER_ENV_DIR})"
 export ASUS_DOCKER_ENV_DOCKERFILE="${ASUS_DOCKER_ENV_DIR}/Dockerfile"
 export ASUS_DOCKER_ENV_IMAGE="asus-iot/asus-docker-env-${ASUS_DOCKER_ENV_BRANCH}:latest"
 export ASUS_DOCKER_ENV_WORKDIR=${ASUS_DOCKER_ENV_DEFAULT_WORKDIR}
-export ASUS_DOCKER_EVN_OPTIONS="--interactive --privileged --rm --tty --hostname asus-docker-env-${ASUS_DOCKER_ENV_BRANCH} --volume ${ASUS_DOCKER_ENV_SOURCE}:${ASUS_DOCKER_ENV_WORKDIR} --workdir ${ASUS_DOCKER_ENV_WORKDIR}"
+export ASUS_DOCKER_EVN_OPTIONS="--interactive --privileged --rm --tty --hostname asus-docker-env --volume ${ASUS_DOCKER_ENV_SOURCE}:${ASUS_DOCKER_ENV_WORKDIR} --workdir ${ASUS_DOCKER_ENV_WORKDIR}"
 
 #if [ $# -eq 0 ]; then
 #    echo "There is no directory path to the source provided."
