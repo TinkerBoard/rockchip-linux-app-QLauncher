@@ -4,7 +4,7 @@
 
 declare -r ASUS_DOCKER_ENV_DEFAULT_WORKDIR="/source"
 
-export ASUS_DOCKER_ENV_BRANCH="linux4.4-rk3288-tinker_board-3.0.13"
+export ASUS_DOCKER_ENV_BRANCH="linux4.4-rk3288-tinker_board"
 export ASUS_DOCKER_ENV_SOURCE="$(dirname ${ASUS_DOCKER_ENV_DIR})"
 export ASUS_DOCKER_ENV_DOCKERFILE="${ASUS_DOCKER_ENV_DIR}/Dockerfile"
 export ASUS_DOCKER_ENV_IMAGE="asus-iot/asus-docker-env-${ASUS_DOCKER_ENV_BRANCH}:latest"
